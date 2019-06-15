@@ -1,3 +1,9 @@
+/*******************************************************************************************
+ * @simplecv.cpp This file contains OpenCv 3.4 code to resize image, draw border and lines.
+ * @author Vatsal Sheth
+ * @Date 6/14/19
+ * @Reference: Prof Sam Siewert code http://www.cse.uaa.alaska.edu/~ssiewert/a485_code/simple-cv/
+ * *****************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
