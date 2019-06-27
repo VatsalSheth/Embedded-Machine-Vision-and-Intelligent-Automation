@@ -48,9 +48,9 @@ int main(int argc, char **argv)
 			break;
 			
 		extractChannel(cur_frame, temp, Green_channel);        //Extract green channel from BGR image. i.e conversion to grayscale in G band
-		filename = "./Gray_frame" + to_string(c) + ".ppm";
+		filename = "./Gray_frame" + to_string(c) + ".pgm";
 		cout << filename << endl;
-		imwrite(filename.c_str(), temp); //diff_frame);
+		imwrite(filename.c_str(), temp); 
 		c++; 
 	}while(1);
 
