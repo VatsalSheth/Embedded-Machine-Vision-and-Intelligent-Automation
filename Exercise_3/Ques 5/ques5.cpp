@@ -75,8 +75,8 @@ int main(int argc, char **argv)
 		
 		drawing = Mat::zeros(thresh_frame.size(), CV_8UC3);
 		
-		insertChannel(thresh_frame, drawing, Green_channel);	//Insert threshold gray scale image in green channel. This will make the laser dot green in color.
-		//cur_frame.copyTo(drawing, drawing);		//Draw on original BGR video
+		//insertChannel(thresh_frame, drawing, Green_channel);	//Insert threshold gray scale image in green channel. This will make the laser dot green in color.
+		cur_frame.copyTo(drawing);		//Draw on original BGR video
 		
 		for( size_t i = 0; i< contours.size(); i++ )
 		{
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 			line(drawing, Point(mc[i].x - 50, mc[i].y), Point(mc[i].x + 50, mc[i].y), color_rect, 1, LINE_8, 0);  //Draw horizontal marker intersecting COM of contoue
 			line(drawing, Point(mc[i].x, mc[i].y - 50), Point(mc[i].x, mc[i].y + 50), color_rect, 1, LINE_8, 0);  //Draw vertical marker intersecting COM of contoue
 		}
-		
+				
 		filename = "./Track_frame" + to_string(c) + ".ppm";
 		cout << filename << endl;
 		imwrite(filename.c_str(), drawing); 
