@@ -91,16 +91,12 @@ int main(int argc, char **argv)
 			
 			if(mu[i].m00 > mu[max].m00) 									//Find the index of contour with maximum area
 				max = i;
-				
-			//cout << "Frame" << c << "con" << i << mu[i].m00 << max << endl;
 		}
 		
 		drawing = Mat::zeros(thresh_frame.size(), CV_8UC3);
 		
 		insertChannel(thresh_frame, drawing, Green_channel);	//Insert threshold gray scale image in green channel. This will make the laser dot green in color.
 		//cur_frame.copyTo(drawing, drawing);		//Draw on original BGR video
-		
-		//max = 0;
 		
 		for(size_t i = 0; i< contours.size(); i++ )
 		{
