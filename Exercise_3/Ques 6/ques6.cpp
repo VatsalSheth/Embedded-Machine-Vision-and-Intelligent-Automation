@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	Scalar color_cont = Scalar(255,0, 0);
 	int max;
 	
-	VideoCapture vid("Dark-Room-Laser-Spot-with-Clutter.mpeg");
+	VideoCapture vid("Light-Room-Laser-Spot-with-Clutter.mpeg");
 	
 	if(!vid.isOpened())      // Check if video file opened successfully
 	{
