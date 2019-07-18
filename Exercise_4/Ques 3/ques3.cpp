@@ -25,14 +25,10 @@ Mat skeletal(Mat src)
 	  
 	cvtColor(src, gray, CV_BGR2GRAY);
 	
-	// Use 70 negative for Moose, 150 positive for hand
-	// 
-	// To improve, compute a histogram here and set threshold to first peak
-	//
-	// For now, histogram analysis was done with GIMP
+	// Histogram analysis was done with GIMP
 	threshold(gray, binary, 120, 255, CV_THRESH_BINARY_INV);
 	
-	// To remove median filter, just replace blurr value with 1
+	// Median filter change blur value. blur = 1 means bypass
 	medianBlur(binary, mfblur, 1);
 
 	// This section of code was adapted from the following post, which was
