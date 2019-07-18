@@ -30,8 +30,7 @@ Mat skeletal(Mat src)
 	// To improve, compute a histogram here and set threshold to first peak
 	//
 	// For now, histogram analysis was done with GIMP
-	threshold(gray, binary, 70, 255, CV_THRESH_BINARY);
-	binary = 255 - binary;
+	threshold(gray, binary, 120, 255, CV_THRESH_BINARY_INV);
 	
 	// To remove median filter, just replace blurr value with 1
 	medianBlur(binary, mfblur, 1);
@@ -84,15 +83,11 @@ int main( int argc, char** argv )
 		op = ip;
 		op = skeletal(ip);
         
-        //imshow("Capture Example", op);
-		
-		filename = "./frame" + to_string(c) + ".jpeg";
+       	filename = "./frame" + to_string(c) + ".jpeg";
 		cout << filename << endl;
 		imwrite(filename.c_str(), op);
 		
-		//cvWaitKey(1);
-		
-		if(c >= 90)
+		if(c >= 3000)
 			break;
 			
 		c++;
@@ -101,5 +96,5 @@ int main( int argc, char** argv )
 	cvReleaseCapture(&capture);
     cvDestroyWindow("Capture Example");
     
-	system("ffmpeg -r 30 -s 1920x1080 -i frame%d.jpeg out.mpeg"); 
+	system("ffmpeg -r 30 -i frame%d.jpeg out.mpeg"); 
 } 
