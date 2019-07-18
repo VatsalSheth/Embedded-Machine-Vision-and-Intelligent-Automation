@@ -1,9 +1,9 @@
  /*
- * @ques3.cpp: This file contains c++ code to subtact successive frames in a video to eliminate background and generate 
- * an MPEG resultant video. 
+ * @ques3.cpp: This file contains c++ code to apply skeletal transform through successive thining 
+ * using opencv API in top down approach.
  * @author: Vatsal Sheth
- * @date: 6/25/19
- * @reference OpenCv Documenation and tutorials
+ * @date: 7/17/19
+ * @reference OpenCv Documenation and tutorials, Prof Sam Siweret code for EMVIA course.
  */
  
 #include <unistd.h>
