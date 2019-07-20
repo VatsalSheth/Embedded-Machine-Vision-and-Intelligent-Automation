@@ -29,6 +29,61 @@ using namespace std;
 #define P7(mat,x,y) (mat.at<uchar>(x+1,y))
 #define P8(mat,x,y) (mat.at<uchar>(x+1,y+1))
 
+double max_time = 0;
+double avg_time = 0;
+
+#define NSEC_PER_SEC (1000000000)
+
+int delta_t(struct timespec *stop, struct timespec *start, struct timespec *delta_t)
+{
+  int dt_sec=stop->tv_sec - start->tv_sec;
+  int dt_nsec=stop->tv_nsec - start->tv_nsec;
+
+  if(dt_sec >= 0)
+  {
+    if(dt_nsec >= 0)
+    {
+      delta_t->tv_sec=dt_sec;
+      delta_t->tv_nsec=dt_nsec;
+	  return(1);
+    }
+    else
+    {
+      delta_t->tv_sec=dt_sec-1;
+      delta_t->tv_nsec=NSEC_PER_SEC+dt_nsec;
+	  if(dt_sec-1>=0)
+		   return(1);
+	   else
+		   return(0);
+    }
+  }
+  else
+  {
+    if(dt_nsec >= 0)
+    {
+      delta_t->tv_sec=dt_sec;
+      delta_t->tv_nsec=dt_nsec;
+    }
+    else
+    {
+      delta_t->tv_sec=dt_sec-1;
+      delta_t->tv_nsec=NSEC_PER_SEC+dt_nsec;
+    }
+	return(0);
+  }
+}
+
+void frame_rate(struct timespec *delta_t)
+{
+	double delta_sec; 
+	
+	delta_sec = (double)delta_t->tv_sec+((double)delta_t->tv_nsec/(double)NSEC_PER_SEC);
+	avg_time += delta_sec;
+		
+	if(delta_sec > max_time)
+		max_time = delta_sec;
+}
+
 Mat skeletal(Mat skel)
 {
 	// This section of code was adapted from the Computer & Machine Vision Theory, algorithm & practicalites by E.R.Davies
@@ -112,6 +167,8 @@ int main( int argc, char** argv )
 	string filename;
 	Mat gray_frame, binary_frame, curr_frame, diff_frame, prev_frame;
 	 
+	struct timespec start_time,end_time,delta_time;
+	
 	namedWindow("Capture Example", CV_WINDOW_AUTOSIZE);
 
 	frame=cvQueryFrame(capture);
@@ -126,6 +183,8 @@ int main( int argc, char** argv )
 		if(!frame) break;
 
 		curr_frame = cvarrToMat(frame);
+		
+		clock_gettime(CLOCK_REALTIME, &start_time);
 		
 		cvtColor(curr_frame, gray_frame, CV_BGR2GRAY);
 		
@@ -144,12 +203,22 @@ int main( int argc, char** argv )
 		op = ip;
 		op = skeletal(ip);
         
+        clock_gettime(CLOCK_REALTIME, &end_time);		
+		delta_t(&end_time, &start_time, &delta_time);
+		
+		if(c)
+			frame_rate(&delta_time);
+			
        	filename = "./frame" + to_string(c) + ".jpeg";
 		cout << filename << endl;
 		imwrite(filename.c_str(), op);
 		
 		if(c >= 300)
+		{
+			avg_time = avg_time / c;
+			printf("Average execution time is %f sec and Max execution time is %f sec\n", avg_time, max_time);
 			break;
+		}
 			
 		c++;
     }

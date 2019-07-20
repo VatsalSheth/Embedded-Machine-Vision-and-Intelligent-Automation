@@ -148,7 +148,7 @@ int main( int argc, char** argv )
 		cout << filename << endl;
 		imwrite(filename.c_str(), op);
 		
-		if(c >= 300)
+		if(c >= 3000)
 		{
 			avg_time = avg_time / c;
 			printf("Average execution time is %f sec and Max execution time is %f sec\n", avg_time, max_time);
