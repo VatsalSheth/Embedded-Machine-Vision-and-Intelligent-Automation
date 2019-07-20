@@ -36,33 +36,60 @@ Mat skeletal(Mat skel)
 	int iterations=0;
 	int sigma=0, chi=0;
 	
+	Mat res = skel;
+		
 	do
 	{
 		done = true;
 		
-		for(int i=1; i<(skel.rows-1); i++)
+		for(int j=1; j<(skel.cols-1); j++)
 		{
-			for(int j=1; j<(skel.cols-1); j++)
+			for(int i=1; i<(skel.rows-1); i++)
 			{
 				if(P0(skel,i,j) != 0)
 				{
 					sigma = P1(skel,i,j) + P2(skel,i,j) + P3(skel,i,j) + P4(skel,i,j) + P5(skel,i,j) + P6(skel,i,j) + P7(skel,i,j) + P8(skel,i,j);
 				
-					chi = 	(int)(P1(skel,i,j) != P3(skel,i,j)) + 
-							(int)(P3(skel,i,j) != P5(skel,i,j)) + 
-							(int)(P5(skel,i,j) != P7(skel,i,j)) + 
-							(int)(P7(skel,i,j) != P1(skel,i,j)) +
-							2*(
-								(int)((P2(skel,i,j)>P1(skel,i,j)) && (P2(skel,i,j)>P3(skel,i,j))) +
-								(int)((P4(skel,i,j)>P3(skel,i,j)) && (P4(skel,i,j)>P5(skel,i,j))) +
-								(int)((P6(skel,i,j)>P5(skel,i,j)) && (P6(skel,i,j)>P7(skel,i,j))) +
-								(int)((P8(skel,i,j)>P7(skel,i,j)) && (P8(skel,i,j)>P1(skel,i,j))) 
-							);
-							
-					if((chi == 2) && (sigma != 255))
+					if(sigma != 255)
 					{
-						P0(skel,i,j) = 0;
-						done = false;
+						chi = 	(int)(P1(skel,i,j) != P3(skel,i,j)) + 
+								(int)(P3(skel,i,j) != P5(skel,i,j)) + 
+								(int)(P5(skel,i,j) != P7(skel,i,j)) + 
+								(int)(P7(skel,i,j) != P1(skel,i,j)) +
+								2*(
+									(int)((P2(skel,i,j)>P1(skel,i,j)) && (P2(skel,i,j)>P3(skel,i,j))) +
+									(int)((P4(skel,i,j)>P3(skel,i,j)) && (P4(skel,i,j)>P5(skel,i,j))) +
+									(int)((P6(skel,i,j)>P5(skel,i,j)) && (P6(skel,i,j)>P7(skel,i,j))) +
+									(int)((P8(skel,i,j)>P7(skel,i,j)) && (P8(skel,i,j)>P1(skel,i,j))) 
+								);
+							
+						if((chi == 2))
+						{
+							if((P3(skel,i,j)==0) && (P7(skel,i,j)==255))  //North points
+							{
+								P0(res,i,j) = 0;
+								done = false;
+							}
+							else if((P3(skel,i,j)==255) && (P7(skel,i,j)==0))	//South Points
+							{
+								P0(res,i,j) = 0;
+								done = false;
+							}
+							else if((P1(skel,i,j)==0) && (P5(skel,i,j)==255))	//East Points
+							{
+								P0(res,i,j) = 0;
+								done = false;
+							}
+							else if((P1(skel,i,j)==255) && (P5(skel,i,j)==0))	//West Points
+							{
+								P0(res,i,j) = 0;
+								done = false;
+							}
+							
+							//For direct implementaion without direction bias
+							//P0(res,i,j) = 0;
+							//done = false;
+						}
 					}
 				}
 			}
@@ -72,7 +99,7 @@ Mat skeletal(Mat skel)
 
 	cout << "iterations=" << iterations << endl;
 	
-	return skel;
+	return res;
 }
 
 
@@ -101,17 +128,19 @@ int main( int argc, char** argv )
 		curr_frame = cvarrToMat(frame);
 		
 		cvtColor(curr_frame, gray_frame, CV_BGR2GRAY);
-	
-		//Background subtraction
-		absdiff(prev_frame, gray_frame, diff_frame);
+		
+		//Background subtraction									//Background elimination commented for better results
+		//absdiff(prev_frame, gray_frame, diff_frame);
+		
+		diff_frame = gray_frame;
 		blur(diff_frame, diff_frame, Size(3,3)); 
 		
 		// Histogram analysis was done with GIMP
 		threshold(diff_frame, binary_frame, 120, 255, CV_THRESH_BINARY_INV);
-	
+		
 		// Median filter change blur value. blur = 1 means bypass
-		medianBlur(binary_frame, ip, 1);
-	
+		medianBlur(binary_frame, ip, 3);
+		
 		op = ip;
 		op = skeletal(ip);
         
@@ -119,7 +148,7 @@ int main( int argc, char** argv )
 		cout << filename << endl;
 		imwrite(filename.c_str(), op);
 		
-		if(c >= 3000)
+		if(c >= 300)
 			break;
 			
 		c++;
