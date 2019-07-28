@@ -259,14 +259,13 @@ int main(int argc, char **argv)
 			cvWaitKey(1);
 		}	
 		
-		if(store_flag == 1 && c>750)
+		if(store_flag == 1)
 		{
 			filename = "./Track_frame" + to_string(c-750) + ".ppm";
 			//cout << filename << endl;
 			imwrite(filename.c_str(), op_frame); 
 		}
-		if(c>1750)
-			break;
+		
 		c++; 
 	}while(1);
 	
