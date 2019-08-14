@@ -206,8 +206,8 @@ Mat detect_light(Mat src, Mat frame, int index)
 //Detect pedestrian and mark a rectangle surrounding it on original frame
 Mat detect_pedestrian(Mat src, Mat frame, int index)
 {
-	//vector<Rect> found;
-	if((index & 0x07) == 0)
+	vector<Rect> found;
+	//if((index & 0x07) == 0)
 	{
 		Mat small_frame;
 	
