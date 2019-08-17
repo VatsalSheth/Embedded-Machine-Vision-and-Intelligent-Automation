@@ -55,6 +55,8 @@ CascadeClassifier car_cascade;
 String light_cascade_name = "traffic_light.xml"; 
 CascadeClassifier light_cascade;
 HOGDescriptor hog_pedestrian;
+
+//Uncomment for frame skipping
 //vector<Rect> found;
 //std::vector<Rect> cars;
 //Vec4i draw_left, draw_right;
@@ -150,9 +152,9 @@ void create_lane_mask(Mat src)
 //Detect car using Haar cascade classifier and mark a rectangle surrounding it on original frame
 Mat detect_car(Mat src, Mat frame, int index)
 {
-	std::vector<Rect> cars;
+	std::vector<Rect> cars;      //comment for frame skipping
 
-	//if((index & 0x07) == 0)
+	//if((index & 0x07) == 0)      //uncomment for frame skipping
 	{
 		Mat small_frame;
 	
@@ -178,9 +180,9 @@ Mat detect_car(Mat src, Mat frame, int index)
 //Detect Traffic Light using Haar cascade classifier and mark a rectangle surrounding it on original frame
 Mat detect_light(Mat src, Mat frame, int index)
 {
-	std::vector<Rect> light;
+	std::vector<Rect> light;      //comment for frame skipping
 
-	//if((index & 0x07) == 0)
+	//if((index & 0x07) == 0)    //uncomment for frame skipping
 	{
 		Mat small_frame;
 	
@@ -206,8 +208,9 @@ Mat detect_light(Mat src, Mat frame, int index)
 //Detect pedestrian and mark a rectangle surrounding it on original frame
 Mat detect_pedestrian(Mat src, Mat frame, int index)
 {
-	vector<Rect> found;
-	//if((index & 0x07) == 0)
+	vector<Rect> found;       //comment for frame skipping
+	
+	//if((index & 0x07) == 0)    //uncomment for frame skipping
 	{
 		Mat small_frame;
 	
@@ -228,6 +231,11 @@ Mat detect_pedestrian(Mat src, Mat frame, int index)
 		putText(frame, "P", Point(found[i].x, found[i].y),  FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 2, 8);
 	}
 	
+	if(found.size()!=0)
+	{
+		putText(frame, "SLOW DOWN", Point(10,20),  FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 2, 8);
+	}
+	
 	return frame;
 }
 
@@ -235,8 +243,9 @@ Mat detect_pedestrian(Mat src, Mat frame, int index)
 Mat detect_lane(Mat src, Mat frame, int index)
 {
 	//cv::Point intersect;
-	Vec4i draw_left, draw_right;
-	//if((index & 0x01) == 0)
+	Vec4i draw_left, draw_right;    //comment for frame skipping
+	
+	//if((index & 0x01) == 0)              //uncomment for frame skipping
 	{
 		Mat mask_frame, blur_frame, canny_frame;
 		double slope;
@@ -303,6 +312,8 @@ Mat detect_lane(Mat src, Mat frame, int index)
 	if(draw_right[0] != 0)
 		line(frame, Point(draw_right[0], draw_right[1]+height_offset), Point(draw_right[2], draw_right[3]+height_offset), Scalar(0,0,255), 3, CV_AA);	 //Draw right lane. Add vertical offset to draw line on original full size frame
 	
+	
+	//Find Lane line intersection point for mid-point detection
 	/*if((draw_left[0] != 0) && (draw_right[0] != 0))
 	{
 		intersect.x = ((((draw_left[0]*draw_left[3]) - (draw_left[1]*draw_left[2]))*(draw_right[0]-draw_right[2])) - (((draw_right[0]*draw_right[3]) - (draw_right[1]*draw_right[2]))*(draw_left[0]-draw_left[2]))) / (((draw_left[0]-draw_left[2])*(draw_right[1]-draw_right[3])) - ((draw_left[1]-draw_left[3])*(draw_right[0]-draw_right[2])));
